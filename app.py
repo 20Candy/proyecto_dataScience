@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 bootstrap = Bootstrap(app)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 model = load_model('best_model.h5')
@@ -30,7 +30,7 @@ def index():
             return redirect(request.url)
         if file:
             # Guarda el archivo
-            filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename).replace("\\", "/")
             file.save(filename)
             # Llamada a la función de predicción
             prediction, confidence = predict_mosquito_type(model, filename)
@@ -45,7 +45,7 @@ def predict_mosquito_type(model, img_path):
     img_batch = np.expand_dims(img_array, axis=0)
 
     prediction = model.predict(img_batch)
-    percentage = np.amax(prediction) * 100
+    percentage = (np.amax(prediction) * 100).round(2)
     predicted_index = np.argmax(prediction)
 
     labels = dict((v, k) for k, v in classIndex.items())  # flip the key, values in the dictionary
