@@ -9,11 +9,11 @@ h1 {
 }
 
 .jumbotron-custom {
-    background-color: #f8f9fa;  /* color de fondo */
+    background-color: #eeeeee;  /* color de fondo */
     padding: 20px 30px;         /* espaciado interno */
     border-radius: 10px;        /* bordes redondeados */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* sombra sutil */
-    margin: 20px 0;             /* margen exterior */
+    margin: 20px;               /* separación con el resto del contenido */
 }
 
 .jumbotron-custom img {
