@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+h1 {
+    color: #0066cc;
+}
+
+.jumbotron-custom {
+    background-color: #eeeeee;  /* color de fondo */
+    padding: 20px 30px;         /* espaciado interno */
+    border-radius: 10px;        /* bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* sombra sutil */
+    margin: 20px;               /* separación con el resto del contenido */
+}
+
+.jumbotron-custom img {
+    max-width: 100%;            /* asegura que la imagen no sobrepase el contenedor */
+    margin-bottom: 20px;        /* espacio debajo de la imagen */
+}
+
+.jumbotron-custom h4 {
+    margin-top: 20px;           /* espacio arriba de los títulos */
+}
