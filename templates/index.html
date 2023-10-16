@@ -43,7 +43,24 @@
         </form>
     </div>
 </div>
+
+{% if uploaded_image %}
+<div class="jumbotron">
+    <h4>Imagen cargada:</h4>
+    <img src="{{ uploaded_image }}" alt="Imagen de Mosquito" class="img-fluid" />
+
+    <h4>Clase:</h4>
+    <p>{{ prediction }}</p>
+
+    <h4>Confianza:</h4>
+    <p>{{ confidence }}%</p>
+</div>
+{% endif %}
+</div>
 {% endblock %}
+
+</body>
+</html>
 
 </body>
 </html>
