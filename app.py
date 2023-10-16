@@ -8,6 +8,7 @@ from keras.models import load_model
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
 bootstrap = Bootstrap(app)
 
 UPLOAD_FOLDER = 'uploads'

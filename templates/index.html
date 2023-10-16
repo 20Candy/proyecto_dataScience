@@ -32,10 +32,10 @@
     <p>Con esto en mente, el presente proyecto busca utilizar técnicas de procesamiento de imágenes y aprendizaje automático para identificar la especie de mosquito Aedes aegypti a partir de imágenes, con el fin de apoyar los esfuerzos de prevención del dengue en Guatemala.</p>
 
     <div class="jumbotron">
-        <form>
+        <form method="POST" action="/" enctype="multipart/form-data">
             <div class="input-group mb-3">
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="inputGroupFile01">
+                    <input type="file" class="custom-file-input" id="inputGroupFile01" name="file">
                     <label class="custom-file-label" for="inputGroupFile01">Seleccionar archivo</label>
                 </div>
             </div>
