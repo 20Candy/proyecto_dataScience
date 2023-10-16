@@ -5,8 +5,10 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 from keras.models import load_model
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
