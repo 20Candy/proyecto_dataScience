@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Análisis de Mosquitos en Guatemala</title>
-
 </head>
 <body>
-
 {% extends "bootstrap/base.html" %}
 {% block title %}Análisis de Mosquitos en Guatemala{% endblock %}
     
@@ -32,8 +30,14 @@
     <p>El Ministerio de Salud y Asistencia Social (MSPAS) ha informado que Guatemala ha experimentado un aumento significativo en el número de casos de dengue en 2023, con más de 10,000 casos confirmados y 21 muertes hasta el 12 de agosto. El MSPAS ha declarado una alerta epidemiológica en todo el país para combatir la propagación del dengue (Gobierno De Guatemala, 2023).</p>
     <p>Con esto en mente, el presente proyecto busca utilizar técnicas de procesamiento de imágenes y aprendizaje automático para identificar la especie de mosquito Aedes aegypti a partir de imágenes, con el fin de apoyar los esfuerzos de prevención del dengue en Guatemala.</p>
 
-    <div class="jumbotron">
-        <form method="POST" action="/" enctype="multipart/form-data">
+    <form method="POST" action="/" enctype="multipart/form-data">
+        <select name="model_selector" id="model_selector" class="form-control mb-3 model-dropdown">
+            <option value="best_model.h5" {% if selected_model == 'best_model.h5' %}selected{% endif %}>Modelo 1</option>
+            <option value="best_model2.h5" {% if selected_model == 'best_model2.h5' %}selected{% endif %}>Modelo 2</option>
+            <option value="best_model3.h5" {% if selected_model == 'best_model3.h5' %}selected{% endif %}>Modelo 3</option>
+        </select>
+    
+        <div class="jumbotron">
             <div class="input-group mb-3">
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="inputGroupFile01" name="file">
@@ -41,8 +45,9 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary btn-lg btn-block">Analizar</button>
-        </form>
-    </div>
+        </div>
+    </form>
+    
 </div>
 
 {% if uploaded_image %}
@@ -61,9 +66,6 @@
 </div>
 {% endblock %}
 
-
-</body>
-</html>
 
 </body>
 </html>

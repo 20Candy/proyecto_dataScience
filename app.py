@@ -13,30 +13,36 @@ bootstrap = Bootstrap(app)
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-model = load_model('best_model.h5')
 classIndex = json.load(open("class_indices.json"))
+
+MODELS = {
+    'best_model.h5': load_model('best_model.h5'),
+    'best_model2.h5': load_model('best_model2.h5'),
+    'best_model3.h5': load_model('best_model3.h5')
+}
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # El código relacionado a manejar el POST y renderizar el template no ha cambiado.
     if request.method == 'POST':
-        # Comprueba si hay un archivo en la petición
+        selected_model = request.form.get('model_selector', 'best_model.h5')
+
         if 'file' not in request.files:
             print('No file part')
             return redirect(request.url)
         file = request.files['file']
-        # Si el usuario no selecciona un archivo, el navegador podría enviar un archivo vacío.
         if file.filename == '':
             print('No selected file')
             return redirect(request.url)
         if file:
-            # Guarda el archivo
             filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename).replace("\\", "/")
             file.save(filename)
-            # Llamada a la función de predicción
-            prediction, confidence = predict_mosquito_type(model, filename)
-            return render_template('index.html', uploaded_image=filename, prediction=prediction, confidence=confidence)
+            
+            current_model = MODELS[selected_model]  # Usamos el modelo ya cargado en memoria
+            prediction, confidence = predict_mosquito_type(current_model, filename)
+
+            return render_template('index.html', uploaded_image=filename, prediction=prediction, confidence=confidence, selected_model=selected_model)
     
-    # Si no es un POST o no se cumplen las condiciones anteriores, siempre se retorna esta línea
     return render_template('index.html', uploaded_image=None, prediction=None, confidence=None)
 
 def predict_mosquito_type(model, img_path):
