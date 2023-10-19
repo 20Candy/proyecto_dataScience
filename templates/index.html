@@ -33,7 +33,7 @@
     <form method="POST" action="/" enctype="multipart/form-data">
         <select name="model_selector" id="model_selector" class="form-control mb-3 model-dropdown">
             <option value="best_model.h5" {% if selected_model == 'best_model.h5' %}selected{% endif %}>Modelo 1</option>
-            <option value="best_model2.h5" {% if selected_model == 'best_model2.h5' %}selected{% endif %}>Modelo 2</option>
+            <option value="best_model2.joblib" {% if selected_model == 'best_model2.joblib' %}selected{% endif %}>Modelo 2</option>
             <option value="best_model3.h5" {% if selected_model == 'best_model3.h5' %}selected{% endif %}>Modelo 3</option>
         </select>
     
