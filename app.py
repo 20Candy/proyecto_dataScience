@@ -54,8 +54,11 @@ def predict_mosquito_type(model, img_path, model_name):
     img = Image.open(img_path).resize((100, 100))
     
     if model_name.endswith(".h5"):  # Si es un modelo Keras
-        img_array = img_to_array(img) / 255.
+        print("Modelo Keras")
+        img = image.load_img(img_path, target_size=(100, 100))
+        img_array = image.img_to_array(img) / 255.
         img_batch = np.expand_dims(img_array, axis=0)
+
         prediction = model.predict(img_batch)
         percentage = (np.amax(prediction) * 100).round(2)
         predicted_index = np.argmax(prediction)
@@ -64,6 +67,7 @@ def predict_mosquito_type(model, img_path, model_name):
         predicted_label = labels[predicted_index]
 
     elif model_name.endswith(".joblib"):  # Si es el modelo SVM
+        print("Modelo SVM")
         feature = hog(img, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2), visualize=False)
 
         svm_model = model["model"]
