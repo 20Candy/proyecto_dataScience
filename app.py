@@ -9,6 +9,8 @@ from joblib import load  # Importa la función load de joblib
 from skimage.feature import hog
 from keras.preprocessing.image import img_to_array
 from PIL import Image
+import matplotlib.pyplot as plt
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -40,13 +42,20 @@ def index():
             print('No selected file')
             return redirect(request.url)
         if file:
+
             filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename).replace("\\", "/")
             file.save(filename)
-            
-            current_model = MODELS[selected_model]  # Usamos el modelo ya cargado en memoria
-            prediction, confidence = predict_mosquito_type(current_model, filename, selected_model)
 
-            return render_template('index.html', uploaded_image=filename, prediction=prediction, confidence=confidence, selected_model=selected_model)
+            # Si se seleccionó la opción "TODOS", llama a graficas()
+            if selected_model == 'ALL':
+                graph_path = graficas(filename)
+                return render_template('index.html', uploaded_image=filename, graph_image=graph_path)
+
+            else:                
+                current_model = MODELS[selected_model]  # Usamos el modelo ya cargado en memoria
+                prediction, confidence = predict_mosquito_type(current_model, filename, selected_model)
+
+                return render_template('index.html', uploaded_image=filename, prediction=prediction, confidence=confidence, selected_model=selected_model)
     
     return render_template('index.html', uploaded_image=None, prediction=None, confidence=None)
 
@@ -82,6 +91,34 @@ def predict_mosquito_type(model, img_path, model_name):
 
     return predicted_label, percentage
 
+
+def graficas(filename):
+    model_names = list(MODELS.keys())
+    accuracies = []
+
+    # Hacer predicciones usando cada modelo
+    for model_name in model_names:
+        _, accuracy = predict_mosquito_type(MODELS[model_name], filename, model_name)
+        accuracies.append(accuracy)
+
+    # Crear el directorio si no existe
+    if not os.path.exists('static/graphs/'):
+        os.makedirs('static/graphs/')
+        
+    # Crear gráfica
+    plt.figure(figsize=(10, 5))
+    plt.bar(model_names, accuracies, color=['blue', 'green', 'red'])
+    plt.xlabel('Modelo')
+    plt.ylabel('Accuracy (%)')
+    plt.title('Comparativa de precisión entre modelos')
+    plt.ylim(0, 100)  # para que el eje y vaya de 0 a 100
+
+    # Guardar gráfica como imagen
+    graph_path = os.path.join('static', 'graphs', 'model_comparison.png')
+    plt.savefig(graph_path)
+    plt.close()
+
+    return graph_path
 
 
 if __name__ == '__main__':

@@ -35,6 +35,7 @@
             <option value="best_model.h5" {% if selected_model == 'best_model.h5' %}selected{% endif %}>Modelo 1</option>
             <option value="best_model2.joblib" {% if selected_model == 'best_model2.joblib' %}selected{% endif %}>Modelo 2</option>
             <option value="best_model3.h5" {% if selected_model == 'best_model3.h5' %}selected{% endif %}>Modelo 3</option>
+            <option value="ALL" {% if selected_model == 'ALL' %}selected{% endif %}>TODOS</option>
         </select>
     
         <div class="jumbotron">
@@ -59,6 +60,15 @@
         <p>{{ prediction }}</p>
         <h4>Confianza:</h4>
         <p>{{ confidence }}%</p>
+    </div>
+</div>
+{% endif %}
+
+{% if graph_image %}
+<div class="card mt-4 shadow-lg">
+    <div class="jumbotron-custom">
+        <h4>Comparativa de Modelos</h4>
+        <img src="static/graphs/model_comparison.png" alt="Gráfica de Comparación" class="img-fluid" />
     </div>
 </div>
 {% endif %}
