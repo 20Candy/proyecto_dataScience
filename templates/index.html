@@ -51,11 +51,13 @@
     
 </div>
 
-{% if uploaded_image  and not graph_image%}
+{% if uploaded_image and not graph_image %}
 <div class="card mt-4 shadow-lg">
     <div class="jumbotron-custom">
         <h4>Resultados del Análisis</h4>
-        <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
+        </div>
         <h4 class="mt-4">Clase:</h4>
         <p>{{ prediction }}</p>
         <h4>Confianza:</h4>
@@ -68,8 +70,12 @@
 <div class="card mt-4 shadow-lg">
     <div class="jumbotron-custom">
         <h4>Comparativa de Modelos</h4>
-        <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
-        <img src="static/graphs/model_comparison.png" alt="Gráfica de Comparación" class="img-fluid" />
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
+        </div>
+        <div class="graph-container">
+            <img src="static/graphs/model_comparison.png" alt="Gráfica de Comparación" class="img-fluid" />
+        </div>
     </div>
 </div>
 {% endif %}

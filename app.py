@@ -10,7 +10,8 @@ from skimage.feature import hog
 from keras.preprocessing.image import img_to_array
 from PIL import Image
 import matplotlib.pyplot as plt
-
+import matplotlib
+matplotlib.use('Agg')  # Use a non-GUI backend to prevent the error
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -89,7 +90,11 @@ def predict_mosquito_type(model, img_path, model_name):
         prediction_proba = svm_model.predict_proba([feature])
         percentage = (prediction_proba[0][prediction[0]] * 100).round(2)
 
+    # Cierre la imagen después de usarla
+    img.close()
+
     return predicted_label, percentage
+
 
 
 def graficas(filename):
@@ -114,7 +119,7 @@ def graficas(filename):
     plt.ylim(0, 100)  # para que el eje y vaya de 0 a 100
 
     # Cambiar las etiquetas en el eje x
-    new_labels = ['Modelo 1', 'Modelo 2', 'Modelo 3']
+    new_labels = ['Modelo 1 (CNN)', 'Modelo 2 (FFNN)', 'Modelo 3 (SVM)']
     plt.xticks(ticks=range(len(model_names)), labels=new_labels)
 
     # Guardar gráfica como imagen
