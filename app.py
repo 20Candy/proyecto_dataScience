@@ -113,6 +113,10 @@ def graficas(filename):
     plt.title('Comparativa de precisión entre modelos')
     plt.ylim(0, 100)  # para que el eje y vaya de 0 a 100
 
+    # Cambiar las etiquetas en el eje x
+    new_labels = ['Modelo 1', 'Modelo 2', 'Modelo 3']
+    plt.xticks(ticks=range(len(model_names)), labels=new_labels)
+
     # Guardar gráfica como imagen
     graph_path = os.path.join('static', 'graphs', 'model_comparison.png')
     plt.savefig(graph_path)
