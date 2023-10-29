@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 import os
 from keras.preprocessing import image
 import numpy as np
+import pandas as pd
 import json
 from keras.models import load_model
 from flask_bootstrap import Bootstrap
@@ -32,15 +33,18 @@ classIndex = json.load(open("class_indices.json"))
 # }
 
 MODELS = {
-    'CNN': load_model('best_model.h5'),       # Carga el modelo CNN
-    'SVM': load_model('best_model.h5'),       # Carga el modelo CNN
-    'FFNN': load_model('best_model.h5'),       # Carga el modelo CNN
+    'CNN': load_model('best_model.h5'),  # Carga el modelo CNN
+    'FFNN': load_model('best_model.h5'),  # Carga el modelo FFNN
 }
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    uploaded_image = None
+    graph_path = None
+    results = {}
+
     if request.method == 'POST':
-        selected_model = request.form.get('model_selector', 'best_model.h5')
+        selected_model = request.form.get('model_selector', 'CNN')
 
         if 'file' not in request.files:
             print('No file part')
@@ -57,14 +61,27 @@ def index():
             # Si se seleccionó la opción "TODOS", llama a graficas()
             if selected_model == 'ALL':
                 graph_path = graficas(filename)
-                return render_template('index.html', uploaded_image=filename, graph_image=graph_path)
+                results['ALL'] = {'graph_image': graph_path,}
 
-            else:                
+                for model_name in MODELS:
+                    current_model = MODELS[model_name]
+                    prediction, confidence = predict_mosquito_type(current_model, filename, model_name)
+                    results[model_name] = {
+                        'prediction': prediction,
+                        'confidence': confidence,
+                    }
+
+            else:
                 current_model = MODELS[selected_model]  # Usamos el modelo ya cargado en memoria
                 prediction, confidence = predict_mosquito_type(current_model, filename, selected_model)
+                results[selected_model] = {
+                    'prediction': prediction,
+                    'confidence': confidence,
+                }
+                graph_path = graficas(filename)
 
-                return render_template('index.html', uploaded_image=filename, prediction=prediction, confidence=confidence, selected_model=selected_model)
-    
+            return render_template('index.html', uploaded_image=filename, results=results, selected_model=selected_model, graph_image=graph_path)
+
     return render_template('index.html', uploaded_image=None, prediction=None, confidence=None)
 
 def predict_mosquito_type(model, img_path, model_name):
@@ -103,66 +120,39 @@ def predict_mosquito_type(model, img_path, model_name):
     return predicted_label, percentage
 
 
-
 def graficas(filename):
     model_names = list(MODELS.keys())
-    accuracies = []
     mosquito_labels = []  # Almacenar los nombres de los mosquitos detectados
     confidences = []  # Almacenar la confianza de cada modelo
 
     # Hacer predicciones usando cada modelo
     for model_name in model_names:
         predicted_mosquito, accuracy = predict_mosquito_type(MODELS[model_name], filename, model_name)
-        accuracies.append(accuracy)
         mosquito_labels.append(predicted_mosquito)
         confidences.append(accuracy)
 
-    # Crear el directorio si no existe
-    if not os.path.exists('static/graphs/'):
-        os.makedirs('static/graphs/')
-
-    # Definir colores para representar cada mosquito
-    mosquito_colors = {
-        'albopictus': '#7E7E7E',            # Gray
-        'culex': '#2E8B57',                 # Sea Green
-        'culiseta': '#CD5C5C',              # Indian Red
-        'japonicus/koreicus': '#9370DB',    # Medium Purple
-        'anopheles': '#FFA07A',             # Light Salmon
-        'aegypti': '#FFFF66'                # Yellow
+    # Crear un DataFrame para los datos
+    data = {
+        'Modelo': model_names,
+        'Mosquito detectado': mosquito_labels,
+        'Confianza (%)': confidences
     }
+    df = pd.DataFrame(data)
 
-    # Crear gráfica
-    plt.figure(figsize=(10, 5))
-    bars = plt.bar(model_names, accuracies)
+    # Crear una figura interactiva con Plotly Express
+    fig = px.bar(
+        df,
+        x='Modelo',
+        y='Confianza (%)',
+        color='Mosquito detectado',
+        text='Confianza (%)',
+        title='Comparativa de Clasificación de Modelos'
+    )
 
-    # Cambiar las etiquetas en el eje x
-    new_labels = ['CNN', 'SVM', 'FFNN']
-    plt.xticks()
-    plt.gca().set_xticklabels(new_labels)
-
-    # Agregar etiquetas de mosquito y confianza a las barras
-    for i, bar in enumerate(bars):
-        mosquito_label = mosquito_labels[i]
-        confidence = confidences[i]
-        bar.set_color(mosquito_colors.get(mosquito_label, 'gray'))
-        plt.text(
-            i,
-            accuracy + 5,
-            f'{mosquito_label}\n{confidence}%',
-            ha='center',
-            va='bottom',
-            fontsize=10,
-        )
-
-    plt.xlabel('Modelo')
-    plt.ylabel('Accuracy (%)')
-    plt.title('Comparativa de precisión entre modelos')
-    plt.ylim(0, 100)  # para que el eje y vaya de 0 a 100
-
-    # Guardar gráfica como imagen
-    graph_path = os.path.join('static', 'graphs', 'model_comparison.png')
-    plt.savefig(graph_path)
-    plt.close()
+    # Renderiza la figura como un archivo HTML
+    fig.update_layout(autosize=False, width=600, height=400)
+    graph_path = os.path.join('static', 'graphs', 'model_comparison.html')
+    fig.write_html(graph_path)
 
     return graph_path
 
