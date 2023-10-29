@@ -1,5 +1,8 @@
 final/*
 resized_normalized/*
+best_model.h5
+best_model2.joblib
+best_model3.h5
 procesadas/*
 ```
 *.pyc
