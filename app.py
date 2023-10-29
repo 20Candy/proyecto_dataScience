@@ -27,17 +27,22 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 classIndex = json.load(open("class_indices.json"))
 
 
+if os.path.exists('best_model.h5') and os.path.exists('best_model2.joblib') and os.path.exists('best_model3.h5'):
+    print("\n\n--- MODELOS CNN, SVM, FFNN ---\nLos modelos fueron cargados correctamente.")
+else:
+    print("\n\n--- MODELOS CNN, SVM, FFNN ---")
+    print("Los modelos de aprendizaje automático entrenados para este proyecto son demasiado grandes para ser alojados en GitHub.")
+    print("\nSe pueden descargar los modelos necesarios desde el siguiente link:")
+    print("https://drive.google.com/drive/folders/1yw3JlAWlEF-Y2qs2wuLY_MGZHLSGH01k?usp=sharing")
+    print("\nNota: Para descargar los modelos, se debe tener una dirección de correo electrónico con el dominio uvg.edu.gt.")
+    print("Una vez descargados los modelos, se deben colocar en la carpeta principal del proyecto.\n")
+    exit()
 
-# MODELS = {
-#     'CNN': load_model('best_model.h5'),       # Carga el modelo CNN
-#     'SVM': load('best_model2.joblib'),   # Carga el modelo SVM
-#     'FFNN': load_model('best_model3.h5')      # Carga el modelo FFNN
-# }
 
 MODELS = {
-    'CNN': load_model('best_model.h5'),  # Carga el modelo CNN
-    'SVM': load_model('best_model.h5'),  # Carga el modelo SVM
-    'FFNN': load_model('best_model.h5'),  # Carga el modelo FFNN
+    'CNN': load_model('best_model.h5'),       # Carga el modelo CNN
+    'SVM': load('best_model2.joblib'),   # Carga el modelo SVM
+    'FFNN': load_model('best_model3.h5')      # Carga el modelo FFNN
 }
 
 @app.route('/', methods=['GET', 'POST'])
@@ -91,7 +96,7 @@ def index():
 def predict_mosquito_type(model, img_path, model_name):
     img = Image.open(img_path).resize((100, 100))
     
-    if model_name == "CNN" or model_name == "FFNN" or model_name == "SVM":  # Si es el modelo Keras
+    if model_name == "CNN" or model_name == "FFNN":  # Si es el modelo Keras
         print("Modelo Keras")
         img = image.load_img(img_path, target_size=(100, 100))
         img_array = image.img_to_array(img) / 255.

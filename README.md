@@ -1,15 +1,13 @@
 # Proyecto Data Science
 
 
-Los modelos de aprendizaje automático entrenados para este proyecto son demasiado grandes para ser alojados en este repositorio de GitHub. Puedes descargar los modelos necesarios desde el siguiente enlace:
+Los modelos de aprendizaje automático entrenados para este proyecto son demasiado grandes para ser alojados en este repositorio de GitHub. Se puede descargar los modelos necesarios desde el siguiente enlace:
 
-- [Modelo 1 (nombre del modelo)](enlace de descarga 1) - (Descripción breve)
-- [Modelo 2 (nombre del modelo)](enlace de descarga 2) - (Descripción breve)
-- [Modelo 3 (nombre del modelo)](enlace de descarga 3) - (Descripción breve)
+https://drive.google.com/drive/folders/1yw3JlAWlEF-Y2qs2wuLY_MGZHLSGH01k?usp=sharing
 
-**Nota:** Para descargar los modelos, debes tener una dirección de correo electrónico con el dominio uvg.edu.gt.
+**Nota:** Para descargar los modelos, se debe tener una dirección de correo electrónico con el dominio uvg.edu.gt.
 
-Una vez que hayas descargado los modelos, colócalos en la carpeta del proyecto siguiendo la estructura adecuada.
+Una vez descargados los modelos, se debe colocar en la carpeta principal del proyecto.
 
 -----------------
 
