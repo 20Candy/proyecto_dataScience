@@ -10,6 +10,7 @@ from skimage.feature import hog
 from keras.preprocessing.image import img_to_array
 from PIL import Image
 import matplotlib.pyplot as plt
+import plotly.express as px
 import matplotlib
 matplotlib.use('Agg')  # Use a non-GUI backend to prevent the error
 
@@ -24,10 +25,16 @@ classIndex = json.load(open("class_indices.json"))
 
 
 
+# MODELS = {
+#     'best_model.h5': load_model('best_model.h5'),       # Carga el modelo CNN
+#     'best_model2.joblib': load('best_model2.joblib'),   # Carga el modelo SVM
+#     'best_model3.h5': load_model('best_model3.h5')      # Carga el modelo FFNN
+# }
+
 MODELS = {
-    'best_model.h5': load_model('best_model.h5'),
-    'best_model2.joblib': load('best_model2.joblib'),  # Carga el modelo SVM
-    'best_model3.h5': load_model('best_model3.h5')
+    'best_model.h5': load_model('best_model.h5'),       # Carga el modelo CNN
+    'best_model2.h5': load_model('best_model.h5'),       # Carga el modelo CNN
+    'best_model3.h5': load_model('best_model.h5'),       # Carga el modelo CNN
 }
 
 @app.route('/', methods=['GET', 'POST'])
@@ -100,27 +107,57 @@ def predict_mosquito_type(model, img_path, model_name):
 def graficas(filename):
     model_names = list(MODELS.keys())
     accuracies = []
+    mosquito_labels = []  # Almacenar los nombres de los mosquitos detectados
+    confidences = []  # Almacenar la confianza de cada modelo
 
     # Hacer predicciones usando cada modelo
     for model_name in model_names:
-        _, accuracy = predict_mosquito_type(MODELS[model_name], filename, model_name)
+        predicted_mosquito, accuracy = predict_mosquito_type(MODELS[model_name], filename, model_name)
         accuracies.append(accuracy)
+        mosquito_labels.append(predicted_mosquito)
+        confidences.append(accuracy)
 
     # Crear el directorio si no existe
     if not os.path.exists('static/graphs/'):
         os.makedirs('static/graphs/')
-        
+
+    # Definir colores para representar cada mosquito
+    mosquito_colors = {
+        'albopictus': '#7E7E7E',            # Gray
+        'culex': '#2E8B57',                 # Sea Green
+        'culiseta': '#CD5C5C',              # Indian Red
+        'japonicus/koreicus': '#9370DB',    # Medium Purple
+        'anopheles': '#FFA07A',             # Light Salmon
+        'aegypti': '#FFFF66'                # Yellow
+    }
+
     # Crear gráfica
     plt.figure(figsize=(10, 5))
-    plt.bar(model_names, accuracies, color=['blue', 'green', 'red'])
+    bars = plt.bar(model_names, accuracies)
+
+    # Cambiar las etiquetas en el eje x
+    new_labels = ['CNN', 'SVM', 'FFNN']
+    plt.xticks()
+    plt.gca().set_xticklabels(new_labels)
+
+    # Agregar etiquetas de mosquito y confianza a las barras
+    for i, bar in enumerate(bars):
+        mosquito_label = mosquito_labels[i]
+        confidence = confidences[i]
+        bar.set_color(mosquito_colors.get(mosquito_label, 'gray'))
+        plt.text(
+            i,
+            accuracy + 5,
+            f'{mosquito_label}\n{confidence}%',
+            ha='center',
+            va='bottom',
+            fontsize=10,
+        )
+
     plt.xlabel('Modelo')
     plt.ylabel('Accuracy (%)')
     plt.title('Comparativa de precisión entre modelos')
     plt.ylim(0, 100)  # para que el eje y vaya de 0 a 100
-
-    # Cambiar las etiquetas en el eje x
-    new_labels = ['Modelo 1 (CNN)', 'Modelo 2 (FFNN)', 'Modelo 3 (SVM)']
-    plt.xticks(ticks=range(len(model_names)), labels=new_labels)
 
     # Guardar gráfica como imagen
     graph_path = os.path.join('static', 'graphs', 'model_comparison.png')
