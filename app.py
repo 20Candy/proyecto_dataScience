@@ -98,9 +98,12 @@ def predict_mosquito_type(model, img_path, model_name):
     
     if model_name == "CNN" or model_name == "FFNN":  # Si es el modelo Keras
         print("Modelo Keras")
+
+        # Procesar la imagen para que sea compatible con el modelo
         img = image.load_img(img_path, target_size=(100, 100))
         img_array = image.img_to_array(img) / 255.
         img_batch = np.expand_dims(img_array, axis=0)
+        #----------------------------
 
         prediction = model.predict(img_batch)
         percentage = (np.amax(prediction) * 100).round(2)
@@ -111,7 +114,10 @@ def predict_mosquito_type(model, img_path, model_name):
 
     elif model_name == "SVM": # Si es el modelo SVM
         print("Modelo SVM")
+
+        # Procesar la imagen para que sea compatible con el modelo
         feature = hog(img, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2), visualize=False)
+        #----------------------------
 
         svm_model = model["model"]
         le = model["labelencoder"]
