@@ -34,6 +34,7 @@ classIndex = json.load(open("class_indices.json"))
 
 MODELS = {
     'CNN': load_model('best_model.h5'),  # Carga el modelo CNN
+    'SVM': load_model('best_model.h5'),  # Carga el modelo SVM
     'FFNN': load_model('best_model.h5'),  # Carga el modelo FFNN
 }
 
@@ -87,7 +88,7 @@ def index():
 def predict_mosquito_type(model, img_path, model_name):
     img = Image.open(img_path).resize((100, 100))
     
-    if model_name == "CNN" or model_name == "FFNN":  # Si es el modelo Keras
+    if model_name == "CNN" or model_name == "FFNN" or model_name == "SVM":  # Si es el modelo Keras
         print("Modelo Keras")
         img = image.load_img(img_path, target_size=(100, 100))
         img_array = image.img_to_array(img) / 255.

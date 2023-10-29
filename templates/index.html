@@ -74,6 +74,11 @@
                         <td>{{ results['CNN']['confidence'] }}%</td>
                     </tr>
                     <tr>
+                        <td>SVM</td>
+                        <td>{{ results['SVM']['prediction'] }}</td>
+                        <td>{{ results['SVM']['confidence'] }}%</td>
+                    </tr>
+                    <tr>
                         <td>FFNN</td>
                         <td>{{ results['FFNN']['prediction'] }}</td>
                         <td>{{ results['FFNN']['confidence'] }}%</td>
@@ -82,8 +87,20 @@
             </table>
             {% else %}
             <h4 class="mt-4">Resultados para {{ selected_model }}:</h4>
-            <p>Clase: {{ results[selected_model]['prediction'] }}</p>
-            <p>Confianza: {{ results[selected_model]['confidence'] }}%</p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Clase</th>
+                        <th>Confianza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ results[selected_model]['prediction'] }}</td>
+                        <td>{{ results[selected_model]['confidence'] }}%</td>
+                    </tr>
+                </tbody>
+            </table>
             {% endif %}
 
             <div class="graph-container">
