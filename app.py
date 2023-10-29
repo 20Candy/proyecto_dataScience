@@ -162,7 +162,6 @@ def graficas(filename):
 
 
 def zancudo_grafica():
-
     data = {
         'Categoría de Zancudo': ['albopictus', 'culex', 'culiseta', 'japonicus/koreicus', 'anopheles', 'aegypti'],
         'Enfermedades Transmitidas': [
@@ -175,11 +174,24 @@ def zancudo_grafica():
         ]
     }
 
+    expanded_df = pd.DataFrame({
+        'Categoría de Zancudo': [cat for cat, diseases in zip(data['Categoría de Zancudo'], data['Enfermedades Transmitidas']) for _ in diseases],
+        'Enfermedades Transmitidas': [disease for diseases in data['Enfermedades Transmitidas'] for disease in diseases]
+    })
 
-    df = pd.DataFrame(data)
+    sintomas = {
+        'Chikungunya': 'Fiebre, Dolor en las articulaciones, Erupción cutánea, Conjuntivitis, Dolor de cabeza, Mialgia',
+        'Dengue': 'Fiebre, Dolor de cabeza, Dolor detrás de los ojos, Náuseas, Vómitos, Erupción cutánea',
+        'Zika': 'Fiebre, Erupción cutánea, Conjuntivitis, Dolores musculares',
+        'Fiebre Amarilla': 'Fiebre, Dolor de cabeza, Ictericia, Hemorragia, Vómitos',
+        'Dirofilariasis': 'Tos, Dificultad para respirar, Dolor torácico',
+        'Virus del Nilo Occidental': 'Fiebre, Dolor de cabeza, Náuseas, Vómitos, Debilidad',
+        'Encefalitis': 'Fiebre, Dolor de cabeza, Náuseas, Vómitos, Debilidad',
+        'Malaria': 'Fiebre, Escalofríos, Sudoración, Dolor de cabeza, Náuseas, Vómitos',
+        'Filariasis Linfática': 'Inflamación y dolor en las extremidades'
+    }
 
-    # Crear un DataFrame adicional para expandir las categorías y enfermedades en filas separadas
-    expanded_df = df.explode('Enfermedades Transmitidas')
+    expanded_df['Síntomas'] = expanded_df['Enfermedades Transmitidas'].map(sintomas)
 
     # Crear el gráfico de barras apiladas
     fig = px.bar(
@@ -187,11 +199,11 @@ def zancudo_grafica():
         x='Categoría de Zancudo',
         y=expanded_df['Enfermedades Transmitidas'].apply(lambda x: 1),
         text='Enfermedades Transmitidas',
+        hover_data=['Síntomas'],  # Agregar información sobre los síntomas al pasar el ratón
         title='Enfermedades Transmitidas por Categoría de Zancudo',
         category_orders={"Categoría de Zancudo": ["albopictus", "culex", "culiseta", "japonicus/koreicus", "anopheles", "aegypti"]}
     )
 
-    # Configurar la apariencia del gráfico
     fig.update_layout(
         autosize=False,
         width=800,
@@ -204,6 +216,7 @@ def zancudo_grafica():
     fig.update_layout(autosize=False, width=1000, height=400)
     graph_path = os.path.join('static', 'graphs', 'zancudos.html')
     fig.write_html(graph_path)
+
 
 
 if __name__ == '__main__':
