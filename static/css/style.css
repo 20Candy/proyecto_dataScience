@@ -45,6 +45,6 @@ h1 {
     display: none;
 }
 
-.hidden-checkbox:checked + .toggle-label {
-    background-color: #245b8a;
+.hidden-checkbox:checked ~ #graph-iframe-1, .hidden-checkbox:checked ~ #graph-iframe-2 {
+    display: none;
 }

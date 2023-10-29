@@ -12,6 +12,8 @@ from keras.preprocessing.image import img_to_array
 from PIL import Image
 import matplotlib.pyplot as plt
 import plotly.express as px
+from plotly.offline import plot
+import plotly.graph_objects as go
 import matplotlib
 matplotlib.use('Agg')  # Use a non-GUI backend to prevent the error
 
@@ -81,6 +83,7 @@ def index():
                 }
                 graph_path = graficas(filename)
 
+            zancudo_grafica()
             return render_template('index.html', uploaded_image=filename, results=results, selected_model=selected_model, graph_image=graph_path)
 
     return render_template('index.html', uploaded_image=None, prediction=None, confidence=None)
@@ -156,6 +159,51 @@ def graficas(filename):
     fig.write_html(graph_path)
 
     return graph_path
+
+
+def zancudo_grafica():
+
+    data = {
+        'Categoría de Zancudo': ['albopictus', 'culex', 'culiseta', 'japonicus/koreicus', 'anopheles', 'aegypti'],
+        'Enfermedades Transmitidas': [
+            ['Chikungunya', 'Dengue', 'Zika', 'Fiebre Amarilla', 'Dirofilariasis'],
+            ['Virus del Nilo Occidental', 'Encefalitis'],
+            ['Encefalitis'],
+            ['Virus del Nilo Occidental', 'Encefalitis', 'Dirofilariasis'],
+            ['Malaria', 'Filariasis Linfática'],
+            ['Dengue', 'Zika', 'Chikungunya', 'Fiebre Amarilla']
+        ]
+    }
+
+
+    df = pd.DataFrame(data)
+
+    # Crear un DataFrame adicional para expandir las categorías y enfermedades en filas separadas
+    expanded_df = df.explode('Enfermedades Transmitidas')
+
+    # Crear el gráfico de barras apiladas
+    fig = px.bar(
+        expanded_df,
+        x='Categoría de Zancudo',
+        y=expanded_df['Enfermedades Transmitidas'].apply(lambda x: 1),
+        text='Enfermedades Transmitidas',
+        title='Enfermedades Transmitidas por Categoría de Zancudo',
+        category_orders={"Categoría de Zancudo": ["albopictus", "culex", "culiseta", "japonicus/koreicus", "anopheles", "aegypti"]}
+    )
+
+    # Configurar la apariencia del gráfico
+    fig.update_layout(
+        autosize=False,
+        width=800,
+        height=400,
+        xaxis_title="Categoría de Zancudo",
+        yaxis_title="Enfermedades Transmitidas"
+    )
+
+    # Renderiza la figura como un archivo HTML
+    fig.update_layout(autosize=False, width=1000, height=400)
+    graph_path = os.path.join('static', 'graphs', 'zancudos.html')
+    fig.write_html(graph_path)
 
 
 if __name__ == '__main__':
