@@ -26,15 +26,15 @@ classIndex = json.load(open("class_indices.json"))
 
 
 # MODELS = {
-#     'best_model.h5': load_model('best_model.h5'),       # Carga el modelo CNN
-#     'best_model2.joblib': load('best_model2.joblib'),   # Carga el modelo SVM
-#     'best_model3.h5': load_model('best_model3.h5')      # Carga el modelo FFNN
+#     'CNN': load_model('best_model.h5'),       # Carga el modelo CNN
+#     'SVM': load('best_model2.joblib'),   # Carga el modelo SVM
+#     'FFNN': load_model('best_model3.h5')      # Carga el modelo FFNN
 # }
 
 MODELS = {
-    'best_model.h5': load_model('best_model.h5'),       # Carga el modelo CNN
-    'best_model2.h5': load_model('best_model.h5'),       # Carga el modelo CNN
-    'best_model3.h5': load_model('best_model.h5'),       # Carga el modelo CNN
+    'CNN': load_model('best_model.h5'),       # Carga el modelo CNN
+    'SVM': load_model('best_model.h5'),       # Carga el modelo CNN
+    'FFNN': load_model('best_model.h5'),       # Carga el modelo CNN
 }
 
 @app.route('/', methods=['GET', 'POST'])
@@ -70,7 +70,7 @@ def index():
 def predict_mosquito_type(model, img_path, model_name):
     img = Image.open(img_path).resize((100, 100))
     
-    if model_name.endswith(".h5"):  # Si es un modelo Keras
+    if model_name == "CNN" or model_name == "FFNN":  # Si es el modelo Keras
         print("Modelo Keras")
         img = image.load_img(img_path, target_size=(100, 100))
         img_array = image.img_to_array(img) / 255.
@@ -83,7 +83,7 @@ def predict_mosquito_type(model, img_path, model_name):
         labels = dict((v, k) for k, v in classIndex.items())  # flip the key, values in the dictionary
         predicted_label = labels[predicted_index]
 
-    elif model_name.endswith(".joblib"):  # Si es el modelo SVM
+    elif model_name == "SVM": # Si es el modelo SVM
         print("Modelo SVM")
         feature = hog(img, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2), visualize=False)
 
