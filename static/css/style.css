@@ -28,3 +28,23 @@ h1 {
 .model-dropdown {
     margin-bottom: 20px; 
 }
+
+.hidden-checkbox {
+    display: none;
+}
+
+.toggle-label {
+    background-color: #327AB7;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hidden-checkbox:checked + .toggle-label + #graph-iframe {
+    display: none;
+}
+
+.hidden-checkbox:checked ~ #graph-iframe-1, .hidden-checkbox:checked ~ #graph-iframe-2 {
+    display: none;
+}

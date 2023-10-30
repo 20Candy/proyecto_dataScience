@@ -15,10 +15,10 @@
     <h1 class="display-4 text-center mb-4">Análisis de Mosquitos en Guatemala</h1>
     <div class="text-center mb-3">
         <img src="static/images/logo_uvg.png" alt="Logo de Universidad del Valle de Guatemala" class="img-fluid" width="200px"/>
-        <h2>Universidad del Valle de Guatemala</h2>
+        <h3>Universidad del Valle de Guatemala</h2>
     </div>
 
-    <h3>Integrantes del equipo:</h3>
+    <h4>Integrantes del equipo:</h3>
     <ul>
         <li>Carol Arévalo</li>
         <li>Stefano Aragoni</li>
@@ -26,16 +26,16 @@
         <li>Diego Perdomo</li>
     </ul>
 
-    <h3>Descripción:</h3>
+    <h4>Descripción:</h3>
     <p>El Ministerio de Salud y Asistencia Social (MSPAS) ha informado que Guatemala ha experimentado un aumento significativo en el número de casos de dengue en 2023, con más de 10,000 casos confirmados y 21 muertes hasta el 12 de agosto. El MSPAS ha declarado una alerta epidemiológica en todo el país para combatir la propagación del dengue (Gobierno De Guatemala, 2023).</p>
     <p>Con esto en mente, el presente proyecto busca utilizar técnicas de procesamiento de imágenes y aprendizaje automático para identificar la especie de mosquito Aedes aegypti a partir de imágenes, con el fin de apoyar los esfuerzos de prevención del dengue en Guatemala.</p>
 
     <form method="POST" action="/" enctype="multipart/form-data">
         <select name="model_selector" id="model_selector" class="form-control mb-3 model-dropdown">
-            <option value="best_model.h5" {% if selected_model == 'best_model.h5' %}selected{% endif %}>Modelo 1</option>
-            <option value="best_model2.joblib" {% if selected_model == 'best_model2.joblib' %}selected{% endif %}>Modelo 2</option>
-            <option value="best_model3.h5" {% if selected_model == 'best_model3.h5' %}selected{% endif %}>Modelo 3</option>
-            <option value="ALL" {% if selected_model == 'ALL' %}selected{% endif %}>TODOS</option>
+            <option value="CNN" {% if selected_model == 'CNN' %}selected{% endif %}>CNN</option>
+            <option value="SVM" {% if selected_model == 'SVM' %}selected{% endif %}>SVM</option>
+            <option value="FFNN" {% if selected_model == 'FFNN' %}selected{% endif %}>FFNN</option>
+            <option value="ALL" {% if selected_model == 'ALL' %}selected{% endif %}>Todos</option>
         </select>
     
         <div class="jumbotron">
@@ -49,40 +49,72 @@
         </div>
     </form>
     
-</div>
+    {% if uploaded_image %}
+    <div class="card mt-4 shadow-lg">
+        <div class="jumbotron-custom">
+            <h4>Resultados del Análisis</h4>
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
+            </div>
 
-{% if uploaded_image and not graph_image %}
-<div class="card mt-4 shadow-lg">
-    <div class="jumbotron-custom">
-        <h4>Resultados del Análisis</h4>
-        <div class="image-container">
-            <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
-        </div>
-        <h4 class="mt-4">Clase:</h4>
-        <p>{{ prediction }}</p>
-        <h4>Confianza:</h4>
-        <p>{{ confidence }}%</p>
-    </div>
-</div>
-{% endif %}
+            {% if selected_model == 'ALL' %}
+            <h4 class="mt-4">Resultados para cada modelo:</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>Clase</th>
+                        <th>Confianza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CNN</td>
+                        <td>{{ results['CNN']['prediction'] }}</td>
+                        <td>{{ results['CNN']['confidence'] }}%</td>
+                    </tr>
+                    <tr>
+                        <td>SVM</td>
+                        <td>{{ results['SVM']['prediction'] }}</td>
+                        <td>{{ results['SVM']['confidence'] }}%</td>
+                    </tr>
+                    <tr>
+                        <td>FFNN</td>
+                        <td>{{ results['FFNN']['prediction'] }}</td>
+                        <td>{{ results['FFNN']['confidence'] }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% else %}
+            <h4 class="mt-4">Resultados para {{ selected_model }}:</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Clase</th>
+                        <th>Confianza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ results[selected_model]['prediction'] }}</td>
+                        <td>{{ results[selected_model]['confidence'] }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% endif %}
 
-{% if graph_image %}
-<div class="card mt-4 shadow-lg">
-    <div class="jumbotron-custom">
-        <h4>Comparativa de Modelos</h4>
-        <div class="image-container">
-            <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
-        </div>
-        <div class="graph-container">
-            <img src="static/graphs/model_comparison.png" alt="Gráfica de Comparación" class="img-fluid" />
+            <div class="graph-container">
+                <input type="checkbox" id="toggle-graph-checkbox" class="hidden-checkbox" />
+                <label for="toggle-graph-checkbox" id="toggle-graph-button" class="toggle-label">Mostrar Gráficas</label>
+                <iframe id="graph-iframe-1" src="{{ graph_image }}" width="100%" height="400" style="border:none;"></iframe>
+                <iframe id="graph-iframe-2" src="/static/graphs/zancudos.html" width="100%" height="400" style="border:none;"></iframe>
+            </div>
         </div>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
 </div>
 {% endblock %}
-
 
 </body>
 </html>

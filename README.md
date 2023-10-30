@@ -1,5 +1,16 @@
 # Proyecto Data Science
 
+
+Los modelos de aprendizaje automático entrenados para este proyecto son demasiado grandes para ser alojados en este repositorio de GitHub. Se puede descargar los modelos necesarios desde el siguiente enlace:
+
+https://drive.google.com/drive/folders/1yw3JlAWlEF-Y2qs2wuLY_MGZHLSGH01k?usp=sharing
+
+**Nota:** Para descargar los modelos, se debe tener una dirección de correo electrónico con el dominio uvg.edu.gt.
+
+Una vez descargados los modelos, se debe colocar en la carpeta principal del proyecto.
+
+-----------------
+
 El Ministerio de Salud y Asistencia Social (MSPAS) ha informado que Guatemala ha experimentado un aumento significativo en el número de casos de dengue en 2023, con más de 10,000 casos confirmados y 21 muertes hasta el 12 de agosto. El MSPAS ha declarado una alerta epidemiológica en todo el país para combatir la propagación del dengue (Gobierno De Guatemala, 2023).  
 
 ## Objetivo
