@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Análisis de Mosquitos en Guatemala</title>
+</head>
+<body>
+{% extends "bootstrap/base.html" %}
+{% block title %}Análisis de Mosquitos en Guatemala{% endblock %}
+    
+{% block content %}
+<div class="container mt-5">
+    <h1 class="display-4 text-center mb-4">Análisis de Mosquitos en Guatemala</h1>
+    <div class="text-center mb-3">
+        <img src="static/images/logo_uvg.png" alt="Logo de Universidad del Valle de Guatemala" class="img-fluid" width="200px"/>
+        <h3>Universidad del Valle de Guatemala</h2>
+    </div>
+
+    <h4>Integrantes del equipo:</h3>
+    <ul>
+        <li>Carol Arévalo</li>
+        <li>Stefano Aragoni</li>
+        <li>Luis Santos</li>
+        <li>Diego Perdomo</li>
+    </ul>
+
+    <h4>Descripción:</h3>
+    <p>El Ministerio de Salud y Asistencia Social (MSPAS) ha informado que Guatemala ha experimentado un aumento significativo en el número de casos de dengue en 2023, con más de 10,000 casos confirmados y 21 muertes hasta el 12 de agosto. El MSPAS ha declarado una alerta epidemiológica en todo el país para combatir la propagación del dengue (Gobierno De Guatemala, 2023).</p>
+    <p>Con esto en mente, el presente proyecto busca utilizar técnicas de procesamiento de imágenes y aprendizaje automático para identificar la especie de mosquito Aedes aegypti a partir de imágenes, con el fin de apoyar los esfuerzos de prevención del dengue en Guatemala.</p>
+
+    <form method="POST" action="/" enctype="multipart/form-data">
+        <select name="model_selector" id="model_selector" class="form-control mb-3 model-dropdown">
+            <option value="CNN" {% if selected_model == 'CNN' %}selected{% endif %}>CNN</option>
+            <option value="SVM" {% if selected_model == 'SVM' %}selected{% endif %}>SVM</option>
+            <option value="FFNN" {% if selected_model == 'FFNN' %}selected{% endif %}>FFNN</option>
+            <option value="ALL" {% if selected_model == 'ALL' %}selected{% endif %}>Todos</option>
+        </select>
+    
+        <div class="jumbotron">
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile01" name="file">
+                    <label class="custom-file-label" for="inputGroupFile01">Seleccionar archivo</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Analizar</button>
+        </div>
+    </form>
+    
+    {% if uploaded_image %}
+    <div class="card mt-4 shadow-lg">
+        <div class="jumbotron-custom">
+            <h4>Resultados del Análisis</h4>
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='uploads/' + uploaded_image.split('/')[-1]) }}" alt="Imagen de Mosquito" class="img-fluid" />
+            </div>
+
+            {% if selected_model == 'ALL' %}
+            <h4 class="mt-4">Resultados para cada modelo:</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>Clase</th>
+                        <th>Confianza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CNN</td>
+                        <td>{{ results['CNN']['prediction'] }}</td>
+                        <td>{{ results['CNN']['confidence'] }}%</td>
+                    </tr>
+                    <tr>
+                        <td>SVM</td>
+                        <td>{{ results['SVM']['prediction'] }}</td>
+                        <td>{{ results['SVM']['confidence'] }}%</td>
+                    </tr>
+                    <tr>
+                        <td>FFNN</td>
+                        <td>{{ results['FFNN']['prediction'] }}</td>
+                        <td>{{ results['FFNN']['confidence'] }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% else %}
+            <h4 class="mt-4">Resultados para {{ selected_model }}:</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Clase</th>
+                        <th>Confianza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ results[selected_model]['prediction'] }}</td>
+                        <td>{{ results[selected_model]['confidence'] }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% endif %}
+
+            <div class="graph-container">
+                <input type="checkbox" id="toggle-graph-checkbox" class="hidden-checkbox" />
+                <label for="toggle-graph-checkbox" id="toggle-graph-button" class="toggle-label">Mostrar Gráficas</label>
+                <iframe id="graph-iframe-1" src="{{ graph_image }}" width="100%" height="400" style="border:none;"></iframe>
+                <iframe id="graph-iframe-2" src="/static/graphs/zancudos.html" width="100%" height="400" style="border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+h1 {
+    color: #0066cc;
+}
+
+.jumbotron-custom {
+    background-color: #eeeeee;  
+    padding: 20px 30px;         
+    border-radius: 10px;       
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    margin: 20px;              
+}
+
+.jumbotron-custom img {
+    max-width: 100%;            
+    margin-bottom: 20px;       
+}
+
+.jumbotron-custom h4 {
+    margin-top: 20px;           
+}
+
+.model-dropdown {
+    margin-bottom: 20px; 
+}
+
+.hidden-checkbox {
+    display: none;
+}
+
+.toggle-label {
+    background-color: #327AB7;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hidden-checkbox:checked + .toggle-label + #graph-iframe {
+    display: none;
+}
+
+.hidden-checkbox:checked ~ #graph-iframe-1, .hidden-checkbox:checked ~ #graph-iframe-2 {
+    display: none;
+}
