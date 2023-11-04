@@ -95,6 +95,10 @@ def index():
 
 def predict_mosquito_type(model, img_path, model_name):
     img = Image.open(img_path).resize((100, 100))
+
+    # Convierte a blanco y negro si tiene más de 1 canal (es decir, si no es grayscale)
+    if img.mode != 'L':  # 'L' significa que la imagen está en modo grayscale
+        img = img.convert('L')
     
     if model_name == "CNN" or model_name == "FFNN":  # Si es el modelo Keras
         print("Modelo Keras")
